@@ -4,7 +4,7 @@ namespace ElasticAuth\SocialiteProvider;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
-class LaravelPassportExtendSocialite
+class ElasticAuthExtendSocialite
 {
     /**
      * Register the provider.
