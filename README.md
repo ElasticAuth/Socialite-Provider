@@ -8,6 +8,14 @@ composer require elasticauth/socialite-provider
 
 Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
 
+### Publish routes and controllers
+
+You can optionally publish the pre-made routes and controllers for the socialite provider with the artisan command below.
+
+```bash
+php artisan vendor:publish --tag=elasticauth-socialiteprovider
+```
+
 ### Add configuration to `config/services.php`
 
 ```php
