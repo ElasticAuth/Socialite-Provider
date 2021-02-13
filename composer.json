@@ -17,5 +17,12 @@
     "psr-4": {
       "ElasticAuth\\SocialiteProvider\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ElasticAuth\\SocialiteProvider\\ServiceProvider"
+      ]
+    }
   }
 }
