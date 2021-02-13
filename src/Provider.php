@@ -16,7 +16,9 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    protected $scopes = [''];
+    protected $scopes = [
+        'user.read'
+    ];
 
     /**
      * {@inheritdoc}
@@ -29,16 +31,7 @@ class Provider extends AbstractProvider
     public static function additionalConfigKeys()
     {
         return [
-            'host',
-            'authorize_uri',
-            'token_uri',
-            'userinfo_uri',
-            'userinfo_key',
-            'user_id',
-            'user_nickname',
-            'user_name',
-            'user_email',
-            'user_avatar',
+            'host'
         ];
     }
 
@@ -46,12 +39,11 @@ class Provider extends AbstractProvider
      * Get the authentication URL for the provider.
      *
      * @param string $state
-     *
      * @return string
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase($this->getElasticAuthUrl('authorize_uri'), $state);
+        return $this->buildAuthUrlFromBase($this->getConfig('host') . '/oauth/authorize', $state);
     }
 
     /**
@@ -61,19 +53,18 @@ class Provider extends AbstractProvider
      */
     protected function getTokenUrl()
     {
-        return $this->getElasticAuthUrl('token_uri');
+        return $this->getConfig('host') . 'oauth/token';
     }
 
     /**
      * Get the raw user for the given access token.
      *
      * @param string $token
-     *
      * @return array
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get($this->getElasticAuthUrl('userinfo_uri'), [
+        $response = $this->getHttpClient()->get($this->getConfig('host') . 'api/user', [
             'headers' => [
                 'Authorization' => 'Bearer '.$token,
             ],
@@ -86,20 +77,16 @@ class Provider extends AbstractProvider
      * Map the raw user array to a Socialite User instance.
      *
      * @param array $user
-     *
      * @return \Laravel\Socialite\User
      */
     protected function mapUserToObject(array $user)
     {
-        $key = $this->getConfig('userinfo_key', null);
-        $data = is_null($key) === true ? $user : Arr::get($user, $key, []);
-
-        return (new User())->setRaw($data)->map([
-            'id'       => $this->getUserData($data, 'id'),
-            'nickname' => $this->getUserData($data, 'nickname'),
-            'name'     => $this->getUserData($data, 'name'),
-            'email'    => $this->getUserData($data, 'email'),
-            'avatar'   => $this->getUserData($data, 'avatar'),
+        return (new User())->setRaw($user)->map([
+            'id'        => $user['id'],
+            'nickname'  => null,
+            'name'      => $user['name'],
+            'email'     => $user['email'],
+            'avatar'    => null
         ]);
     }
 
@@ -107,7 +94,6 @@ class Provider extends AbstractProvider
      * Get the POST fields for the token request.
      *
      * @param string $code
-     *
      * @return array
      */
     protected function getTokenFields($code)
@@ -115,19 +101,5 @@ class Provider extends AbstractProvider
         return array_merge(parent::getTokenFields($code), [
             'grant_type' => 'authorization_code',
         ]);
-    }
-
-    protected function getElasticAuthUrl($type)
-    {
-        return rtrim($this->getConfig('host'), '/').'/'.ltrim(($this->getConfig($type, Arr::get([
-                'authorize_uri' => 'oauth/authorize',
-                'token_uri'     => 'oauth/token',
-                'userinfo_uri'  => 'api/user',
-            ], $type))), '/');
-    }
-
-    protected function getUserData($user, $key)
-    {
-        return Arr::get($user, $this->getConfig('user_'.$key, $key));
     }
 }
