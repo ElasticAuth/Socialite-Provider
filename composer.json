@@ -21,7 +21,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "ElasticAuth\\SocialiteProvider\\ServiceProvider"
+        "ElasticAuth\\SocialiteProvider\\ElasticAuthSocialiteServiceProvider"
       ]
     }
   }
