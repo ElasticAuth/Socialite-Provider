@@ -2,7 +2,10 @@
 
 namespace ElasticAuth\SocialiteProvider;
 
-class ElasticAuthSocialiteServiceProvider
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
+
+class ElasticAuthSocialiteServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Register services.
