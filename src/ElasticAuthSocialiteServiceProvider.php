@@ -28,7 +28,7 @@ class ElasticAuthSocialiteServiceProvider
         $this->publishes([
             __DIR__ . '/../stubs/App/Http/Controllers' => app_path('App/Controllers'),
             __DIR__ . '/../stubs/routes/elasticauthsocialiteprovider.php' => app_path('routes'),
-        ]);
+        ], 'elasticauth-socialiteprovider');
 
     }
 }
